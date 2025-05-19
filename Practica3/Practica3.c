@@ -20,6 +20,7 @@ void menu_recursi(int repeticiones) {
             sumaMaxima();
             break;
         case 2:
+            muestraCreacion();
             break;
         case 3: 
             break;
@@ -33,7 +34,6 @@ void menu_recursi(int repeticiones) {
         return;
     }
 }
-
 
 int main() {
     int numero_opciones;
