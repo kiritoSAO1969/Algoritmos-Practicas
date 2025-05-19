@@ -5,6 +5,8 @@
 
 void menu_recursi(int repeticiones) {
     int opcion_escoger;
+
+    system("cls");
     if (repeticiones>0){
         printf("MENU DE OPCIONES\n"
             "Escoga la operacion a realizar, de las siguientes opciones.\n"
@@ -15,6 +17,7 @@ void menu_recursi(int repeticiones) {
         scanf("%d", &opcion_escoger);
         menu_recursi(repeticiones-1);
     } else {
+        printf("Opciones finalizadas, se ha acabado el programa");
         return;
     }
 }
