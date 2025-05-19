@@ -11,8 +11,8 @@ void mostrarArreglo(int * arreglo, int n, int i, int inicial, int final) {
             printf("%d ", arreglo[i]);
             mostrarArreglo(arreglo, n, i + 1, inicial, final);      //Personalizacion para corchete final, final es el final del arreglo
         } else if (i==final){
-            printf("%d", arreglo[i]);
-            printf("]");
+            printf("%d]", arreglo[i]);
+            mostrarArreglo(arreglo, n, i + 1, inicial, final); 
         } else {        //Caso comun de impresion
             printf("%d ", arreglo[i]);
             mostrarArreglo(arreglo, n, i + 1, inicial, final);
@@ -140,8 +140,17 @@ void llenarMatriz(int **matriz, int filas, int columnas, int i, int j) {
 void mostrarMatriz(int **matriz, int filas, int columnas, int i, int j) {
     if (i < filas) {
         if (j < columnas) {
-            printf("%d ", matriz[i][j]);
-            mostrarMatriz(matriz, filas, columnas, i, j+1); //Llamada recursiva para mostrar siguiente columnas
+            if (j==0) {
+                printf("[");
+                printf("%d ", matriz[i][j]);
+                mostrarMatriz(matriz, filas, columnas, i, j+1); //Llamada recursiva para mostrar siguiente columnas
+            } else if (j==columnas-1){
+                printf("%d]", matriz[i][j]);
+                mostrarMatriz(matriz, filas, columnas, i, j+1); //Llamada recursiva para mostrar siguiente columnas
+            } else { 
+                printf("%d ", matriz[i][j]);
+                mostrarMatriz(matriz, filas, columnas, i, j+1); //Llamada recursiva para mostrar siguiente columnas
+            }
         } else {
             printf("\n");
             mostrarMatriz(matriz, filas, columnas, i+1, 0); //Llamada recursiva para mostrar siguiente fila desde 0
