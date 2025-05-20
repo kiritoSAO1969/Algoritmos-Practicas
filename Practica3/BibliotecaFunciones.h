@@ -3,6 +3,11 @@
 #include <time.h>
 #include <windows.h>
 
+//Estructura de la inversion -- Exlusica funciones de inversion
+typedef struct {
+    int i, j;
+} Inversion;
+
 void mostrarArreglo(int * arreglo, int n, int i, int inicial, int final) {
     //Llamada recursiva de impresion de arreglo
     if (i < n) {
@@ -215,4 +220,84 @@ void muestraCreacion() {    //Borrar despues de la creacion de su funcion de mul
     liberacionFilasMatriz(&matriz, 0, filas);    
     free(matriz);
     matriz=NULL;
+}
+
+//SECCION DE INVERSION
+
+static long long merge_count(int arr[], int temp[], int left, int mid, int right,
+                             Inversion invs[], int *inv_index) {
+    int i = left, j = mid, k = left;
+    long long inv_count = 0;
+
+    while (i < mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+            // cada elemento arr[x] (x en [i, mid)) forma inversión con arr[j-1]
+            for (int x = i; x < mid; x++) {
+                invs[*inv_index] = (Inversion){ x, j-1 };
+                (*inv_index)++;
+                inv_count++;
+            }
+        }
+    }
+    while (i < mid)    temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
+    for (i = left; i <= right; i++) arr[i] = temp[i];
+
+    return inv_count;
+}
+
+static long long sort_count(int arr[], int temp[],
+                            int left, int right,
+                            Inversion invs[], int *inv_index) {
+    if (left >= right) return 0;
+    int mid = left + (right - left)/2;
+    long long inv = 0;
+    inv += sort_count(arr, temp, left, mid, invs, inv_index);
+    inv += sort_count(arr, temp, mid+1, right, invs, inv_index);
+    inv += merge_count(arr, temp, left, mid+1, right, invs, inv_index);
+    return inv;
+}
+
+
+void inversorDeArreglo(void) {
+    int *arr = NULL, n;
+    creacionArreglo(&arr, &n);
+    if (!arr || n < 2) {
+        printf("No hay suficientes elementos para invertir.\n");
+        free(arr);
+        return;
+    }
+
+    int *temp = malloc(n * sizeof(int));
+    Inversion *invs = malloc(sizeof(Inversion) * n * (n - 1) / 2);
+    int *original = malloc(n * sizeof(int));
+    memcpy(original, arr, n * sizeof(int));  // Copia original antes de ordenar
+
+    int inv_total = 0;
+    long long total = sort_count(arr, temp, 0, n - 1, invs, &inv_total);
+
+    printf("\nNumero total de inversiones: %lld\n", total);
+    if (inv_total > 0) {
+        printf("Resultados de los cambios realizados\n");
+        //printf("Pares de inversion (i,j) donde arr[i] > arr[j]:\n");
+        for (int k = 0; k < inv_total; k++) {
+            printf("(%d,%d) => %d > %d\n",
+                   invs[k].i, invs[k].j,
+                   original[invs[k].i],
+                   original[invs[k].j]);
+        }
+    }
+    printf("\nArreglo ordenado:\n");
+        for (int i = 0; i < n; i++) {
+            printf("%d ", arr[i]);
+        }
+    printf("\n");
+
+    free(arr);
+    free(temp);
+    free(invs);
+    free(original);
 }

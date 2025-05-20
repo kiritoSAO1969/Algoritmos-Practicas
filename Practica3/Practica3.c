@@ -4,36 +4,39 @@ void menu_recursi(int repeticiones) {
     int opcion_escoger;
 
     system("cls");
-    if (repeticiones>0){                //Seleccion de opcion a escoger
+    if (repeticiones > 0) {
         printf("MENU DE OPCIONES\n"
-            "Escoga la operacion a realizar, de las siguientes opciones.\n"
-            "1. Arreglo de Suma Maxima\n"
-            "2. Multiplicacion de matrices\n"
-            "3. Inversor de arreglo\n"
-            "Opcion a escoger: ");
+               "Escoga la operacion a realizar, de las siguientes opciones.\n"
+               "1. Arreglo de Suma Maxima\n"
+               "2. Multiplicacion de matrices\n"
+               "3. Inversor de arreglo\n"
+               "Opcion a escoger: ");
         scanf("%d", &opcion_escoger);
         fflush(stdin);
+        printf("Opción seleccionada: %d\n", opcion_escoger);
 
-        switch (opcion_escoger)             //Switch para controlar opciones
-        {
-        case 1:
-            sumaMaxima();
-            break;
-        case 2:
-            muestraCreacion();
-            break;
-        case 3: 
-            break;
-        default:
-            break;
+        switch (opcion_escoger) {
+            case 1:
+                sumaMaxima();
+                break;
+            case 2:
+                muestraCreacion();
+                break;
+            case 3:
+                inversorDeArreglo();
+                break;
+            default:
+                printf("Opción inválida. Intente de nuevo.\n");
+                break;
         }
 
-        menu_recursi(repeticiones-1);
+        system("pause");  // <-- para que no se cierre
+        menu_recursi(repeticiones - 1);
     } else {
-        printf("Opciones finalizadas, se ha acabado el programa");      //Finalizacion del programa
-        return;
+        printf("Opciones finalizadas, se ha acabado el programa\n");
     }
 }
+
 
 int main() {
     int numero_opciones;
