@@ -36,29 +36,38 @@ void llenarArreglo(int * arreglo, int n, int i) {
     }
 }
 
-void creacionArreglo(int ** arreglo, int * largoArreglo) {
-    printf("Iniciemos creando el arreglo\n");
-        printf("Ingrese el largo del arreglo a crear (en numero y MAX=20): ");          //Personalizacion largo del arrreglo
-        scanf("%d", largoArreglo);
-        fflush(stdin);
+void creacionArreglo(int **arreglo, int *largoArreglo) {
+    printf("=======================================================\n"
+           "|             INICIO DE CREACION DE ARREGLO           |\n"
+           "=======================================================\n"
+           "Ingrese el largo del arreglo a crear (maximo 20): ");
+    scanf("%d", largoArreglo);
+    fflush(stdin);
 
-        *arreglo = (int*)calloc((*largoArreglo), (sizeof(int)));           //Creacion arreglo de manera dinamica
-
-        if (*arreglo== NULL) {              //Chequeo en caso de error en la asignacion de memoria
-            printf("Memoria insuficiente para la generacion del arreglo\nVolviendo al menu....");
-            Sleep(5000);
-            return;
-        }
-        
-        //Llenado del arreglo
-        printf("Ahora procederemos con el llenado del arreglo\n");
-        llenarArreglo(*arreglo, *largoArreglo, 0);
-        //Muestra del arreglo
-        printf("Se ha creado el arreglo con exito es el siguiente: ");
-        mostrarArreglo(*arreglo, *largoArreglo, 0, 0, (*largoArreglo)-1);
-        printf("\n");
+    *arreglo = (int*)calloc(*largoArreglo, sizeof(int));
+    if (*arreglo == NULL) {
+        printf("\n-------------------------------------------------------\n"
+               "Error: Memoria insuficiente para generar el arreglo.\n"
+               "Regresando al menú...\n"
+               "-------------------------------------------------------\n");
         Sleep(5000);
+        return;
+    }
+
+    printf("-------------------------------------------------------\n"
+           "¡Arreglo creado correctamente! Ahora lo llenaremos.\n"
+           "-------------------------------------------------------\n");
+    llenarArreglo(*arreglo, *largoArreglo, 0);
+
+    printf("=======================================================\n"
+           "|               ARREGLO CREADO EXITOSAMENTE            |\n"
+           "=======================================================\n");
+    printf("Contenido del arreglo: ");
+    mostrarArreglo(*arreglo, *largoArreglo, 0, 0, (*largoArreglo) - 1);
+    printf("\n=======================================================\n");
+    Sleep(5000);
 }
+
 
 //FUNCIONES DE GENERACION-MUESTRA-LLENADO DE MATRIZ
 void llenarMatriz(int **matriz, int filas, int columnas, int i, int j) {
@@ -198,17 +207,20 @@ void busquedaSumMaxima(int **arreglo,int largo) {
     comparacion(*arreglo,0,largo-1,&best_value,subarregl);      //Calculo de la suma maxima
     
     system("cls");
-    printf("Se ha encontrado el mejor maximo\n");
+    printf("=======================================================\n"
+           "|                RESULTADOS: SUMA MAXIMA              |\n"
+           "=======================================================\n");
     
-    printf("RESULTADOS\n");         //Muestra resultados
-    printf("El arreglo original es el siguiente: ");        //Muestra arreglo original
+    printf("RESULTADOS\n"         //Muestra resultados
+        "Arreglo original:");      //Muestra arreglo original
     mostrarArreglo(*arreglo, largo, 0, 0, largo-1);
 
-    printf("\n\nLa suma maxima del arreglo tiene las siguientes caracteristicas: \n");  //Muestra suma maxima encontrada y crt
-    printf("El valor es de: %d\n",best_value);
-    printf("Coordenadas del subarreglo: %d,%d\n",subarregl[0],subarregl[1]);
-    printf("Subarreglo: ");
+    printf("\n-------------------------------------------------------\n");
+    printf("Suma maxima encontrada: %d\n", best_value);
+    printf("Indices del sub-arreglo: [%d, %d]\n", subarregl[0], subarregl[1]);
+    printf("Sub-arreglo con suma maxima: ");
     mostrarArreglo(*arreglo, (subarregl[1])+1, subarregl[0], subarregl[0], subarregl[1]);
+    printf("\n-------------------------------------------------------\n");
     Sleep(5000);
 }
 
@@ -217,10 +229,17 @@ void sumaMaxima(void) {
     int largoArregl;
 
     system("cls");
-    printf("Ha seleccionado la opcion de sumaMaxima del arreglo\n"
-            "Empezaremos creando el arreglo a trabajar\n");
+    printf("=======================================================\n"
+           "|                SUMA MAXIMA EN UN ARREGLO            |\n"
+           "=======================================================\n");
+
+    printf("-> Ha seleccionado la opcion de Suma Maxima del arreglo.\n"
+           "-> Empezaremos creando el arreglo a trabajar...\n");
     creacionArreglo(&arreglo, &largoArregl);            //Creacion y llenado de arreglo
-    printf("Procediendo a realizar los calculos de la Suma Maxima del arreglo\n");
+    
+    printf("\n-------------------------------------------------------\n"
+           "Procediendo a calcular la Suma Maxima del arreglo...\n"
+           "-------------------------------------------------------\n");
     Sleep(3000); 
     busquedaSumMaxima(&arreglo, largoArregl);           //Operacion de la busqueda maxima y muestra de resultados
     free(arreglo);                                      //Liberacion de memoria
@@ -228,9 +247,6 @@ void sumaMaxima(void) {
 }
 
 //SECCION DE INVERSION
-//Se agregaron nuevas funciones para evitar el uso de ciclos
-
-// Versión nueva recursiva
 static long merge_count_recursivo(int arr[], int temp[], int i, int j, int mid, int right, Inversion invs[], int *inv_index, int k, long inv_count) {
     if (i >= mid && j > right) return inv_count;
 
@@ -265,7 +281,6 @@ static long merge_count(int arr[], int temp[], int left, int mid, int right, Inv
     return inv_count;
 }
 
-// Versión recursiva de sort_count
 static long sort_count(int arr[], int temp[], int left, int right, Inversion invs[], int *inv_index) {
     if (left >= right) return 0;
     int mid = left + (right - left) / 2;
@@ -276,7 +291,6 @@ static long sort_count(int arr[], int temp[], int left, int right, Inversion inv
     return inv;
 }
 
-// Mostrar recursivamente todas las inversiones
 void mostrarInversiones(Inversion invs[], int index, int total, int *original) {
     if (index >= total) return;
     printf("(%d,%d) => %d > %d\n",
@@ -286,7 +300,6 @@ void mostrarInversiones(Inversion invs[], int index, int total, int *original) {
     mostrarInversiones(invs, index + 1, total, original);
 }
 
-// Mostrar recursivamente el arreglo ordenado
 void mostrarArregloOrdenado(int *arr, int n, int i) {
     if (i >= n) {
         printf("\n");
@@ -296,33 +309,63 @@ void mostrarArregloOrdenado(int *arr, int n, int i) {
     mostrarArregloOrdenado(arr, n, i + 1);
 }
 
-// Versión recursiva de inversorDeArreglo
 void inversorDeArreglo(void) {
     int *arr = NULL, n;
+    system("cls");
+    printf("=======================================================\n"
+           "|                INVERSION DE ELEMENTOS               |\n"
+            "=======================================================\n");
+
+    printf("-> Ha seleccionado la opcion inversion del arreglo.\n"
+           "-> Empezaremos creando el arreglo a trabajar...\n");
     creacionArreglo(&arr, &n);
+    
+    printf("\n-------------------------------------------------------\n"
+           "Procediendo a calcular la inversion del arreglo...\n"
+           "-------------------------------------------------------\n");
+    Sleep(3000); 
+
+    // Validación del arreglo
     if (!arr || n < 2) {
-        printf("No hay suficientes elementos para invertir.\n");
+        printf("\n--------------------------------------------------------\n"
+               "No hay suficientes elementos para invertir.\n"
+               "-------------------------------------------------------\n");
         free(arr);
         return;
     }
 
+    // Asignación de estructuras auxiliares
     int *temp = malloc(n * sizeof(int));
     Inversion *invs = malloc(sizeof(Inversion) * n * (n - 1) / 2);
     int *original = malloc(n * sizeof(int));
     memcpy(original, arr, n * sizeof(int));
 
+    // Cálculo de inversiones
     int inv_total = 0;
     long total = sort_count(arr, temp, 0, n - 1, invs, &inv_total);
 
-    printf("\nNumero total de inversiones: %ld\n", total);
+    system("cls");
+    printf("=======================================================\n"
+           "|                RESULTADOS: INVERSION                |\n"
+           "=======================================================\n");
+    
+    printf("RESULTADOS\n"         //Muestra resultados
+        "Arreglo original:");      //Muestra arreglo original
+    mostrarArreglo(arr, n, 0, 0, n-1);
+    printf("\n-------------------------------------------------------\n");
+    printf("Numero total de inversiones: %ld\n", total);
     if (inv_total > 0) {
-        printf("Resultados de los cambios realizados\n");
+        printf("Lista de inversiones detectadas:\n");
         mostrarInversiones(invs, 0, inv_total, original);
+    } else {
+        printf("No se encontraron inversiones.\n");
     }
-
-    printf("\nArreglo ordenado:\n");
+    printf("-------------------------------------------------------"
+           "\nArreglo ordenado:");
     mostrarArregloOrdenado(arr, n, 0);
+    printf("-------------------------------------------------------\n");
 
+    // Liberación de memoria
     free(arr);
     free(temp);
     free(invs);
