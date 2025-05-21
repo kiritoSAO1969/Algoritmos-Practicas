@@ -5,9 +5,9 @@ void menu_recursi(int repeticiones) {
 
     system("cls");
     if (repeticiones > 0) {
-        printf("===========================================\n"
-               "|             MENÚ DE OPCIONES            |\n"
-               "===========================================\n"
+        printf("=======================================================\n"
+               "|                    MENÚ DE OPCIONES                 |\n"
+               "=======================================================\n"
                "Seleccione la operación que desea realizar:\n"
                "  1. Arreglo de Suma Maxima\n"
                "  2. Multiplicacion de Matrices\n"
@@ -18,7 +18,7 @@ void menu_recursi(int repeticiones) {
         fflush(stdin);
         
         printf("\nHas seleccionado la opción: %d\n", opcion_escoger);
-        printf("===========================================\n");
+        printf("=======================================================\n");
 
         switch (opcion_escoger) {
             case 1:
@@ -38,9 +38,9 @@ void menu_recursi(int repeticiones) {
         system("pause");  //para que no se cierre
         menu_recursi(repeticiones - 1);
     } else {
-        printf("\n===========================================\n"
-               "|     Opciones finalizadas. Gracias :)    |\n"
-               "===========================================\n");
+        printf("\n=======================================================\n"
+                "|              Opciones finalizadas. Gracias :)        |\n"
+                 "=======================================================\n");
     }
 }
 

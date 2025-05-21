@@ -231,8 +231,7 @@ void sumaMaxima(void) {
 //Se agregaron nuevas funciones para evitar el uso de ciclos
 
 // Versión nueva recursiva
-static long merge_count_recursivo(int arr[], int temp[], int i, int j, int mid, int right,
-                                  Inversion invs[], int *inv_index, int k, long inv_count) {
+static long merge_count_recursivo(int arr[], int temp[], int i, int j, int mid, int right, Inversion invs[], int *inv_index, int k, long inv_count) {
     if (i >= mid && j > right) return inv_count;
 
     if (i < mid && (j > right || arr[i] <= arr[j])) {
@@ -259,8 +258,7 @@ static void copia_merge_resultado(int arr[], int temp[], int left, int right) {
     copia_merge_resultado(arr, temp, left + 1, right);
 }
 
-static long merge_count(int arr[], int temp[], int left, int mid, int right,
-                        Inversion invs[], int *inv_index) {
+static long merge_count(int arr[], int temp[], int left, int mid, int right, Inversion invs[], int *inv_index) {
     long inv_count = merge_count_recursivo(arr, temp, left, mid, mid, right,
                                            invs, inv_index, left, 0);
     copia_merge_resultado(arr, temp, left, right);
@@ -268,8 +266,7 @@ static long merge_count(int arr[], int temp[], int left, int mid, int right,
 }
 
 // Versión recursiva de sort_count
-static long sort_count(int arr[], int temp[], int left, int right,
-                       Inversion invs[], int *inv_index) {
+static long sort_count(int arr[], int temp[], int left, int right, Inversion invs[], int *inv_index) {
     if (left >= right) return 0;
     int mid = left + (right - left) / 2;
     long inv = 0;
