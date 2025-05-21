@@ -223,6 +223,7 @@ void muestraCreacion() {    //Borrar despues de la creacion de su funcion de mul
 }
 
 //SECCION DE INVERSION
+//Se agregaron nuevas funciones para evitar el uso de ciclos
 
 // Versión nueva recursiva
 static long merge_count_recursivo(int arr[], int temp[], int i, int j, int mid, int right,
