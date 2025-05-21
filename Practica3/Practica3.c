@@ -12,7 +12,7 @@ void menu_recursi(int repeticiones) {
                "  1. Arreglo de Suma Maxima\n"
                "  2. Multiplicacion de Matrices\n"
                "  3. Inversor de Arreglo\n"
-               "-------------------------------------------\n"
+               "-------------------------------------------------------\n"
                "Opcion a escoger: ");
         scanf("%d", &opcion_escoger);
         fflush(stdin);
