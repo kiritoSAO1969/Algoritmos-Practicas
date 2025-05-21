@@ -115,7 +115,7 @@ void busquedaSumMaxima(int **arreglo,int largo) {
     Sleep(5000);
 }
 
-void sumaMaxima() {
+void sumaMaxima(void) {
     int * arreglo;
     int largoArregl;
 
@@ -223,48 +223,36 @@ void muestraCreacion() {    //Borrar despues de la creacion de su funcion de mul
 }
 
 //SECCION DE INVERSION
-//Se agregaron nuevas funciones para evitar el uso de ciclos
 
-// Versión nueva recursiva
-static long merge_count_recursivo(int arr[], int temp[], int i, int j, int mid, int right,
-                                  Inversion invs[], int *inv_index, int k, long inv_count) {
-    if (i >= mid && j > right) return inv_count;
+static long long merge_count(int arr[], int temp[], int left, int mid, int right,
+                             Inversion invs[], int *inv_index) {
+    int i = left, j = mid, k = left;
+    long long inv_count = 0;
 
-    if (i < mid && (j > right || arr[i] <= arr[j])) {
-        temp[k] = arr[i];
-        return merge_count_recursivo(arr, temp, i + 1, j, mid, right, invs, inv_index, k + 1, inv_count);
-    }
-
-    if (j <= right) {
-        temp[k] = arr[j];
-        for (int x = i; x < mid; x++) {
-            invs[*inv_index] = (Inversion){ x, j };
-            (*inv_index)++;
-            inv_count++;
+    while (i < mid && j <= right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+            // cada elemento arr[x] (x en [i, mid)) forma inversión con arr[j-1]
+            for (int x = i; x < mid; x++) {
+                invs[*inv_index] = (Inversion){ x, j-1 };
+                (*inv_index)++;
+                inv_count++;
+            }
         }
         return merge_count_recursivo(arr, temp, i, j + 1, mid, right, invs, inv_index, k + 1, inv_count);
     }
+    while (i < mid)    temp[k++] = arr[i++];
+    while (j <= right) temp[k++] = arr[j++];
+    for (i = left; i <= right; i++) arr[i] = temp[i];
 
     return inv_count;
 }
 
-static void copia_merge_resultado(int arr[], int temp[], int left, int right) {
-    if (left > right) return;
-    arr[left] = temp[left];
-    copia_merge_resultado(arr, temp, left + 1, right);
-}
-
-static long merge_count(int arr[], int temp[], int left, int mid, int right,
-                        Inversion invs[], int *inv_index) {
-    long inv_count = merge_count_recursivo(arr, temp, left, mid, mid, right,
-                                           invs, inv_index, left, 0);
-    copia_merge_resultado(arr, temp, left, right);
-    return inv_count;
-}
-
-// Versión recursiva de sort_count
-static long sort_count(int arr[], int temp[], int left, int right,
-                       Inversion invs[], int *inv_index) {
+static long long sort_count(int arr[], int temp[],
+                            int left, int right,
+                            Inversion invs[], int *inv_index) {
     if (left >= right) return 0;
     int mid = left + (right - left) / 2;
     long inv = 0;
@@ -274,27 +262,7 @@ static long sort_count(int arr[], int temp[], int left, int right,
     return inv;
 }
 
-// Mostrar recursivamente todas las inversiones
-void mostrarInversiones(Inversion invs[], int index, int total, int *original) {
-    if (index >= total) return;
-    printf("(%d,%d) => %d > %d\n",
-           invs[index].i, invs[index].j,
-           original[invs[index].i],
-           original[invs[index].j]);
-    mostrarInversiones(invs, index + 1, total, original);
-}
 
-// Mostrar recursivamente el arreglo ordenado
-void mostrarArregloOrdenado(int *arr, int n, int i) {
-    if (i >= n) {
-        printf("\n");
-        return;
-    }
-    printf("%d ", arr[i]);
-    mostrarArregloOrdenado(arr, n, i + 1);
-}
-
-// Versión recursiva de inversorDeArreglo
 void inversorDeArreglo(void) {
     int *arr = NULL, n;
     creacionArreglo(&arr, &n);
@@ -315,11 +283,19 @@ void inversorDeArreglo(void) {
     printf("\nNumero total de inversiones: %ld\n", total);
     if (inv_total > 0) {
         printf("Resultados de los cambios realizados\n");
-        mostrarInversiones(invs, 0, inv_total, original);
+        //printf("Pares de inversion (i,j) donde arr[i] > arr[j]:\n");
+        for (int k = 0; k < inv_total; k++) {
+            printf("(%d,%d) => %d > %d\n",
+                   invs[k].i, invs[k].j,
+                   original[invs[k].i],
+                   original[invs[k].j]);
+        }
     }
-
     printf("\nArreglo ordenado:\n");
-    mostrarArregloOrdenado(arr, n, 0);
+        for (int i = 0; i < n; i++) {
+            printf("%d ", arr[i]);
+        }
+    printf("\n");
 
     free(arr);
     free(temp);
