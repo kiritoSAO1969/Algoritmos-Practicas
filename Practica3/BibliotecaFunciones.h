@@ -115,7 +115,7 @@ void busquedaSumMaxima(int **arreglo,int largo) {
     Sleep(5000);
 }
 
-void sumaMaxima() {
+void sumaMaxima(void) {
     int * arreglo;
     int largoArregl;
 
@@ -223,9 +223,7 @@ void muestraCreacion() {    //Borrar despues de la creacion de su funcion de mul
 }
 
 //SECCION DE INVERSION
-
-static long long merge_count(int arr[], int temp[], int left, int mid, int right,
-                             Inversion invs[], int *inv_index) {
+long merge_count(int arr[], int temp[], int left, int mid, int right, Inversion invs[], int *inv_index) {
     int i = left, j = mid, k = left;
     long long inv_count = 0;
 
@@ -235,23 +233,21 @@ static long long merge_count(int arr[], int temp[], int left, int mid, int right
         } else {
             temp[k++] = arr[j++];
             // cada elemento arr[x] (x en [i, mid)) forma inversión con arr[j-1]
-            for (int x = i; x < mid; x++) {
+            for (int x = i; x < mid; x++) {             //----Coreccion
                 invs[*inv_index] = (Inversion){ x, j-1 };
                 (*inv_index)++;
                 inv_count++;
             }
         }
     }
-    while (i < mid)    temp[k++] = arr[i++];
-    while (j <= right) temp[k++] = arr[j++];
-    for (i = left; i <= right; i++) arr[i] = temp[i];
+    while (i < mid)    temp[k++] = arr[i++];        //--Coreccion
+    while (j <= right) temp[k++] = arr[j++];        //--Coreccion
+    for (i = left; i <= right; i++) arr[i] = temp[i];   //--Coreccion
 
     return inv_count;
 }
 
-static long long sort_count(int arr[], int temp[],
-                            int left, int right,
-                            Inversion invs[], int *inv_index) {
+long sort_count(int arr[], int temp[], int left, int right, Inversion invs[], int *inv_index) {
     if (left >= right) return 0;
     int mid = left + (right - left)/2;
     long long inv = 0;
@@ -260,7 +256,6 @@ static long long sort_count(int arr[], int temp[],
     inv += merge_count(arr, temp, left, mid+1, right, invs, inv_index);
     return inv;
 }
-
 
 void inversorDeArreglo(void) {
     int *arr = NULL, n;
@@ -283,14 +278,14 @@ void inversorDeArreglo(void) {
     if (inv_total > 0) {
         printf("Resultados de los cambios realizados\n");
         //printf("Pares de inversion (i,j) donde arr[i] > arr[j]:\n");
-        for (int k = 0; k < inv_total; k++) {
+        for (int k = 0; k < inv_total; k++) {       //--Correcion
             printf("(%d,%d) => %d > %d\n",
                    invs[k].i, invs[k].j,
                    original[invs[k].i],
                    original[invs[k].j]);
         }
     }
-    printf("\nArreglo ordenado:\n");
+    printf("\nArreglo ordenado:\n");        //--Coreccion
         for (int i = 0; i < n; i++) {
             printf("%d ", arr[i]);
         }

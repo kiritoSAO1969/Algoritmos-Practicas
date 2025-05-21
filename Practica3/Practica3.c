@@ -13,7 +13,7 @@ void menu_recursi(int repeticiones) {
                "Opcion a escoger: ");
         scanf("%d", &opcion_escoger);
         fflush(stdin);
-        printf("Opción seleccionada: %d\n", opcion_escoger);
+        printf("Opcion a seleccionar: %d\n", opcion_escoger);
 
         switch (opcion_escoger) {
             case 1:
@@ -30,7 +30,7 @@ void menu_recursi(int repeticiones) {
                 break;
         }
 
-        system("pause");  // <-- para que no se cierre
+        system("pause");  //para que no se cierre
         menu_recursi(repeticiones - 1);
     } else {
         printf("Opciones finalizadas, se ha acabado el programa\n");
