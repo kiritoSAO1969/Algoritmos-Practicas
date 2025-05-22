@@ -364,7 +364,197 @@ void inversorDeArreglo(void) {
            "\nArreglo ordenado:");
     mostrarArregloOrdenado(arr, n, 0);
     printf("-------------------------------------------------------\n");
+//seccion de matriz
 
+int esPotenciaDeDos(int n) {
+    return (n != 0) && ((n & (n - 1)) == 0);
+}
+
+void crearFila(int **matriz, int i, int n) {
+    if (i == n) return;
+    matriz[i] = calloc(n, sizeof(int));
+    crearFila(matriz, i + 1, n);
+}
+
+int** crearMatriz(int n) {
+    int **matriz = malloc(n * sizeof(int *));
+    crearFila(matriz, 0, n);
+    return matriz;
+}
+
+
+void liberarMatrizRec(int **M, int i, int n) {
+    if (i == n) return;
+    free(M[i]);
+    liberarMatrizRec(M, i + 1, n);
+}
+
+void liberarMatriz(int **M, int n) {
+    liberarMatrizRec(M, 0, n);
+    free(M);
+}
+
+
+void leerMatrizRec(int **M, int n, char nombre, int i, int j) {
+    if (i >= n) return;
+    if (j >= n) {
+        leerMatrizRec(M, n, nombre, i + 1, 0);
+        return;
+    }
+    printf("%c[%d][%d]: ", nombre, i, j);
+    scanf("%d", &M[i][j]);
+    leerMatrizRec(M, n, nombre, i, j + 1);
+}
+
+void leerMatriz(int **M, int n, char nombre) {
+    printf("\nIngresa los valores de la matriz %c (%dx%d):\n", nombre, n, n);
+    leerMatrizRec(M, n, nombre, 0, 0);
+}
+
+void imprimirMatrizRec(int **M, int n, int i, int j) {
+    if (i >= n) return;
+    if (j >= n) {
+        printf("\n");
+        imprimirMatrizRec(M, n, i + 1, 0);
+        return;
+    }
+    printf("%4d ", M[i][j]);
+    imprimirMatrizRec(M, n, i, j + 1);
+}
+
+void imprimirMatriz(int **M, int n) {
+    imprimirMatrizRec(M, n, 0, 0);
+}
+
+void sumaRec(int **A, int **B, int **C, int n, int i, int j) {
+    if (i >= n) return;
+    if (j >= n) {
+        sumaRec(A, B, C, n, i + 1, 0);
+        return;
+    }
+    C[i][j] = A[i][j] + B[i][j];
+    sumaRec(A, B, C, n, i, j + 1);
+}
+
+void suma(int **A, int **B, int **C, int n) {
+    sumaRec(A, B, C, n, 0, 0);
+}
+
+void copiarSubmatrices(int **src, int **dst, int iOffset, int jOffset, int n, int i, int j) {
+    if (i >= n) return;
+    if (j >= n) {
+        copiarSubmatrices(src, dst, iOffset, jOffset, n, i + 1, 0);
+        return;
+    }
+    dst[i][j] = src[i + iOffset][j + jOffset];
+    copiarSubmatrices(src, dst, iOffset, jOffset, n, i, j + 1);
+}
+
+void combinarSubmatrices(int **src, int **dst, int iOffset, int jOffset, int n, int i, int j) {
+    if (i >= n) return;
+    if (j >= n) {
+        combinarSubmatrices(src, dst, iOffset, jOffset, n, i + 1, 0);
+        return;
+    }
+    dst[i + iOffset][j + jOffset] = src[i][j];
+    combinarSubmatrices(src, dst, iOffset, jOffset, n, i, j + 1);
+}
+
+void multiplicar(int **A, int **B, int **C, int n) {
+    if (n == 1) {
+        C[0][0] = A[0][0] * B[0][0];
+        return;
+    }
+
+    int newSize = n / 2;
+    int **A11 = crearMatriz(newSize), **A12 = crearMatriz(newSize);
+    int **A21 = crearMatriz(newSize), **A22 = crearMatriz(newSize);
+    int **B11 = crearMatriz(newSize), **B12 = crearMatriz(newSize);
+    int **B21 = crearMatriz(newSize), **B22 = crearMatriz(newSize);
+    int **C11 = crearMatriz(newSize), **C12 = crearMatriz(newSize);
+    int **C21 = crearMatriz(newSize), **C22 = crearMatriz(newSize);
+    int **temp1 = crearMatriz(newSize), **temp2 = crearMatriz(newSize);
+
+    copiarSubmatrices(A, A11, 0, 0, newSize, 0, 0);
+    copiarSubmatrices(A, A12, 0, newSize, newSize, 0, 0);
+    copiarSubmatrices(A, A21, newSize, 0, newSize, 0, 0);
+    copiarSubmatrices(A, A22, newSize, newSize, newSize, 0, 0);
+
+    copiarSubmatrices(B, B11, 0, 0, newSize, 0, 0);
+    copiarSubmatrices(B, B12, 0, newSize, newSize, 0, 0);
+    copiarSubmatrices(B, B21, newSize, 0, newSize, 0, 0);
+    copiarSubmatrices(B, B22, newSize, newSize, newSize, 0, 0);
+
+    multiplicar(A11, B11, temp1, newSize);
+    multiplicar(A12, B21, temp2, newSize);
+    suma(temp1, temp2, C11, newSize);
+
+    multiplicar(A11, B12, temp1, newSize);
+    multiplicar(A12, B22, temp2, newSize);
+    suma(temp1, temp2, C12, newSize);
+
+    multiplicar(A21, B11, temp1, newSize);
+    multiplicar(A22, B21, temp2, newSize);
+    suma(temp1, temp2, C21, newSize);
+
+    multiplicar(A21, B12, temp1, newSize);
+    multiplicar(A22, B22, temp2, newSize);
+    suma(temp1, temp2, C22, newSize);
+
+    combinarSubmatrices(C11, C, 0, 0, newSize, 0, 0);
+    combinarSubmatrices(C12, C, 0, newSize, newSize, 0, 0);
+    combinarSubmatrices(C21, C, newSize, 0, newSize, 0, 0);
+    combinarSubmatrices(C22, C, newSize, newSize, newSize, 0, 0);
+
+    liberarMatriz(A11, newSize); liberarMatriz(A12, newSize);
+    liberarMatriz(A21, newSize); liberarMatriz(A22, newSize);
+    liberarMatriz(B11, newSize); liberarMatriz(B12, newSize);
+    liberarMatriz(B21, newSize); liberarMatriz(B22, newSize);
+    liberarMatriz(C11, newSize); liberarMatriz(C12, newSize);
+    liberarMatriz(C21, newSize); liberarMatriz(C22, newSize);
+    liberarMatriz(temp1, newSize); liberarMatriz(temp2, newSize);
+}
+
+
+void muestraCreacion(void) {
+    int *arr = NULL, n;
+    system("cls");
+    printf("============================================================================\n"
+           "|                  MULTIPLICACION DE MATRICES                     |\n"
+            "===========================================================================\n");
+    printf("Ingresa el tamano de las matrices (potencia de 2): ");
+    scanf("%d", &n);
+
+    if (!esPotenciaDeDos(n)) {
+        printf("\nEl tamano debe ser una potencia de 2 (como 2, 4, 8, 16...)\n\n");
+        printf("Si se desea otro tamano diferente a una potencia de 2 debera rellenar de 0 los\n");
+        printf("espacios restantes de su matriz hasta alcanzar la potencia de 2 mas cercana\n\n");
+        return 1;
+    }
+
+    int **A = crearMatriz(n);
+    int **B = crearMatriz(n);
+    int **C = crearMatriz(n);
+
+    leerMatriz(A, n, 'A');
+    leerMatriz(B, n, 'B');
+
+    multiplicar(A, B, C, n);
+
+    system("cls");
+    printf("=======================================================================\n"
+           "|                        RESULTADOS: MULTIPLICACION                   |\n"
+           "=======================================================================\n");
+
+    printf("\n\nResultado de A * B:\n");
+    imprimirMatriz(C, n);
+
+    liberarMatriz(A, n);
+    liberarMatriz(B, n);
+    liberarMatriz(C, n);
+
+    return 0;
+}
     // Liberación de memoria
     free(arr);
     free(temp);
